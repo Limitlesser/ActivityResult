@@ -26,9 +26,9 @@ class ResultFragment : Fragment() {
 
     fun startActivityForResult(intent: Intent, options: Bundle? = null): Observable<ActivityResult> {
         val requestCode = code++
-        startActivityForResult(intent, requestCode, options)
         val subject = PublishSubject.create<ActivityResult>()
         subjects[requestCode] = subject
+        startActivityForResult(intent, requestCode, options)
         return subject
     }
 
