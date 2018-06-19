@@ -1,13 +1,13 @@
 package com.limitlesser.activityresult
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.Toast
 import com.limitlesser.activityresult.app.R
 
-class MainActivity : ResultActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +24,4 @@ class MainActivity : ResultActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK)
-            Toast.makeText(this, "收到结果:${data?.getStringExtra("data")}", Toast.LENGTH_SHORT)
-                    .show()
-    }
 }
