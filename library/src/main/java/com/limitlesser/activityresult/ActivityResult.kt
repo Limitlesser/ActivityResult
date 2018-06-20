@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -26,13 +27,18 @@ class ResultFragment : Fragment() {
 
     fun startActivityForResult(intent: Intent, options: Bundle? = null): Observable<ActivityResult> {
         val requestCode = code++
+        startActivityForResult(intent, requestCode, options)
+        return waitingActivityResult(requestCode)
+    }
+
+    fun waitingActivityResult(requestCode: Int): Observable<ActivityResult> {
         val subject = PublishSubject.create<ActivityResult>()
         subjects[requestCode] = subject
-        startActivityForResult(intent, requestCode, options)
         return subject
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         val subject = subjects.remove(requestCode)
         subject?.onNext(ActivityResult(requestCode, resultCode, data))
         subject?.onComplete()
@@ -40,9 +46,17 @@ class ResultFragment : Fragment() {
 
 }
 
+open class ResultActivity : AppCompatActivity() {
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        resultFragment.onActivityResult(requestCode, resultCode, data)
+    }
+}
+
 private const val FRAGMENT_TAG = "ActivityResultFragment"
 
-private val FragmentActivity.resultFragment: ResultFragment
+val FragmentActivity.resultFragment: ResultFragment
     get() {
         return supportFragmentManager?.findFragmentByTag(FRAGMENT_TAG) as ResultFragment?
                 ?: {
@@ -54,6 +68,8 @@ private val FragmentActivity.resultFragment: ResultFragment
                 }()
     }
 
-fun FragmentActivity.startActivityForResult(intent: Intent, options: Bundle? = null): Observable<ActivityResult> {
-    return resultFragment.startActivityForResult(intent, options)
-}
+fun FragmentActivity.startActivityForResult(intent: Intent, options: Bundle? = null) =
+        resultFragment.startActivityForResult(intent, options)
+
+
+fun FragmentActivity.waitingActivityResult(requestCode: Int) = resultFragment.waitingActivityResult(requestCode)
