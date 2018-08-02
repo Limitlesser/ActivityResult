@@ -3,14 +3,14 @@
     
 以往我们调用相机拍照或跳到别的页面获取一些数据时往往是这样的
 
-```Java
+```kotlin
    val intent = Intent(this, Main2Activity::class.java)
    startActivityForResult(intent)
 ```
 
 然后在onActivityResult里处理结果
 
-```Java
+```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK)
@@ -23,7 +23,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 使用ActivityResult的代码看起来是这样的
 
-```Java
+```kotlin
     val intent = Intent(this, Main2Activity::class.java)
     startActivityForResult(intent)
                .subscribe {
@@ -34,7 +34,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 ```
 或者这样的
 
-```Java
+```kotlin
     val intent = Intent(this, Main2Activity::class.java)
     startActivityForResult(intent, 1)
     waitingActivityResult(1)
